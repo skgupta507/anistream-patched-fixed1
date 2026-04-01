@@ -110,7 +110,7 @@ const MEDIA_FRAGMENT = `
   nextAiringEpisode { airingAt episode }
   externalLinks { url site type language }
   rankings { rank type allTime season year }
-  tags(sort: RANK_DESC) { name rank isMediaSpoiler category }
+  tags { name rank isMediaSpoiler category }
 `;
 
 /** Format an AniList date object { year, month, day } → "YYYY-MM-DD" */
@@ -153,7 +153,7 @@ export function normalizeMedia(m) {
     source:      m.source ? m.source.replace(/_/g, " ") : "",
     meanScore:   m.meanScore || null,
     rankings:    m.rankings || [],
-    tags:        (m.tags || []).filter(t => !t.isMediaSpoiler).slice(0, 12),
+    tags:        (m.tags || []).filter(t => !t.isMediaSpoiler).sort((a,b) => (b.rank||0)-(a.rank||0)).slice(0, 12),
     externalLinks: (m.externalLinks || []).filter(l =>
       ["Crunchyroll", "Funimation", "Netflix", "Amazon", "HIDIVE",
        "MyAnimeList", "AniList", "Official Site"].includes(l.site)
